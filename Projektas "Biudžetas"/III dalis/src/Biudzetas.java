@@ -1,74 +1,156 @@
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Biudzetas {
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00");
-    private static final DateTimeFormatter MY_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
     private static int id = 0;
-    private final ArrayList<PajamuIrasas> pajamos = new ArrayList<>();
-    private final ArrayList<IslaiduIrasas> islaidos = new ArrayList<>();
 
-    public void pridetiPajamuIrasa(Scanner sc) {
-        makeRecord(null, pajamos, sc);
+    private final ArrayList<Irasas> irasai = new ArrayList<>();
+
+    public void sukurtiIrPridetiIrasa(Scanner sc) {
+        Irasas irasas = sukurtiIrasa(sc, null);
+        pridetiIrasa(irasas);
     }
 
-    public void pridetiIslaiduIrasa(Scanner sc) {
-        makeRecord(islaidos, null, sc);
+    public void redaguotiIrasa(Scanner sc) {
+        System.out.println("Pasirinkite veiksmą:");
+        String action = showSubmenuItems(sc, "[1] - Pakeisti įrašą",
+                "[2] - Ištrinti įrašą");
+        if (action.equals("1")) {
+            pakeistiIrasa(sc);
+        }
+        if (action.equals("2")) {
+            pasalintiIrasa(sc);
+        }
     }
 
-    public double gautiPajamas() {
+    public double gautiVisasPajamas() {
         double suma = 0;
-        for (PajamuIrasas pi : pajamos) {
-            if (pi != null) {
-                suma += pi.getSuma();
+        for (Irasas irasas : irasai) {
+            if (irasas instanceof PajamuIrasas) {
+                suma += irasas.getSuma();
             }
         }
         return suma;
     }
 
-    public double gautiIslaidas() {
+    public double gautiVisasIslaidas() {
         double suma = 0;
-        for (IslaiduIrasas ii : islaidos) {
-            if (ii != null) {
-                suma += ii.getSuma();
+        for (Irasas irasas : irasai) {
+            if (irasas instanceof IslaiduIrasas) {
+                suma += irasas.getSuma();
             }
         }
         return suma;
-    }
-
-    public void atspausdintiPajamas() {
-        printTableTitle();
-        for (PajamuIrasas pi : pajamos) {
-            System.out.println(String.format(Messages.STRING_FORMAT_FOR_INPUT.message,
-                    pi.getId(), pi.getSuma(), pi.getData(), pi.getPajamuKategorija(),
-                    pi.isAtsiskaitymoBudasBankas(), pi.getPapildomaInfo(), pi.getPajamuTipas()));
-        }
-    }
-
-    public void atspausdintiIslaidas() {
-        printTableTitle();
-        for (IslaiduIrasas ii : islaidos) {
-            System.out.println(String.format(Messages.STRING_FORMAT_FOR_OUTPUT.message,
-                    ii.getId(), ii.getSuma() * -1, ii.getDataSuLaiku().format(MY_DATE_FORMAT),
-                    ii.getIslaiduKategorija(), ii.isAtsiskaitymoBudasBankas(), ii.getPapildomaInfo(), ii.getIslaiduTipas()));
-        }
     }
 
     public double balansas() {
-        return Double.parseDouble(DECIMAL_FORMAT.format(gautiPajamas() - gautiIslaidas()));
+        return Double.parseDouble(DECIMAL_FORMAT.format(gautiVisasPajamas() - gautiVisasIslaidas()));
     }
 
-    public void pasalintiPajamuIrasa(Scanner sc) {
-        System.out.println(Messages.MESSAGE_FOR_INPUT_RECORD_DELETE.message);
+    public void atspausdintiPajamuIrasus() {
+        printTableTitle();
+        for (PajamuIrasas irasas : gautiPajamuIrasus()) {
+            System.out.println(irasas);
+        }
+    }
+
+    public void atspausdintiIslaiduIrasus() {
+        printTableTitle();
+        for (IslaiduIrasas irasas : gautiIslaiduIrasus()) {
+            System.out.println(irasas);
+        }
+    }
+
+    public void atspausdintiVisaSarasa() {
+        printTableTitle();
+        for (Irasas irasas : irasai) {
+            System.out.println(irasas);
+        }
+    }
+
+    private void pridetiIrasa(Irasas irasas) {
+        irasai.add(irasas);
+        System.out.println(Messages.INPUT_SUCCESS.message);
+        atspausdintiVisaSarasa();
+    }
+
+    private Irasas gautiIrasa(int id) {
+            for (Irasas irasas : irasai) {
+                if (irasas.getId() == id) {
+                    return irasas;
+                }
+            }
+        return null;
+    }
+
+    private Irasas sukurtiIrasa(Scanner sc, Integer integer) {
+        int myId;
+        if (integer != null) {
+            myId = integer;
+        } else {
+            myId = id++;
+        }
+        System.out.println(Messages.RECORD_TYPE.message);
+        String type = showSubmenuItems(sc, "[1] - Pajamų įrašas",
+                                                    "[2] - Išlaidų įrašas");
+        System.out.println(Messages.ENTER_AMOUNT.message);
+        double suma = validateAndGetDouble(sc);
+        System.out.println(Messages.ENTER_CATEGORY.message);
+        String kategorija = validateAndGetString(sc);
+        System.out.println(Messages.BANK_PAYMENT.message);
+        boolean atsiskaitymoBudasBankas = taipNe(sc);
+        System.out.println(Messages.ENTER_COMMENT.message);
+        String papildomaInfo = validateAndGetString(sc);
+        if (type.equals("1")) {
+            String irasoTipas = "Pajamos";
+            System.out.println(Messages.INCOME_TYPE.message);
+            String pajamuTipas = validateAndGetType(sc, type);
+            PajamuIrasas pi = new PajamuIrasas(myId, suma, LocalDate.now(), kategorija, atsiskaitymoBudasBankas, papildomaInfo, pajamuTipas, irasoTipas);
+            return  pi;
+        } else if (type.equals("2")) {
+            String irasoTipas = "Išlaidos";
+            System.out.println(Messages.EXPENSE_TYPE.message);
+            String islaiduTipas = validateAndGetType(sc, type);
+            IslaiduIrasas ii = new IslaiduIrasas(myId, suma, LocalDateTime.now(), kategorija, atsiskaitymoBudasBankas, papildomaInfo, islaiduTipas, irasoTipas);
+            return  ii;
+        } else {
+            return null;
+        }
+    }
+
+    private ArrayList<PajamuIrasas> gautiPajamuIrasus() {
+        ArrayList<PajamuIrasas> pajamuIrasai = new ArrayList<>();
+        for (Irasas irasas : irasai){
+            if(irasas instanceof PajamuIrasas) {
+                pajamuIrasai.add((PajamuIrasas) irasas);
+            }
+        }
+        return pajamuIrasai;
+    }
+
+    private ArrayList<IslaiduIrasas> gautiIslaiduIrasus() {
+        ArrayList<IslaiduIrasas> islaiduIrasai = new ArrayList<>();
+        for (Irasas irasas : irasai){
+            if(irasas instanceof IslaiduIrasas) {
+                islaiduIrasai.add((IslaiduIrasas) irasas);
+            }
+        }
+        return islaiduIrasai;
+    }
+
+    private void pasalintiIrasa(Scanner sc) {
+        atspausdintiVisaSarasa();
+        System.out.println(Messages.MESSAGE_FOR_RECORD_DELETE.message);
         int id = validateAndGetInt(sc);
-        if (pajamos.stream().anyMatch(o -> id == o.getId())) {
-            for (PajamuIrasas pi : pajamos) {
-                if(pi.getId() == id) {
-                    pajamos.remove(pi);
+        if (irasai.stream().anyMatch(o -> id == o.getId())) {
+            for (Irasas irasas : irasai) {
+                if (irasas.getId() == id) {
+                    irasai.remove(irasas);
                     System.out.println(Messages.DELETE_SUCCESS.message);
                     break;
                 }
@@ -76,31 +158,150 @@ public class Biudzetas {
         } else {
             System.out.println(String.format(Messages.RECORD_NOT_FOUND.message, id));
         }
-        atspausdintiPajamas();
-
+        atspausdintiVisaSarasa();
     }
 
-    public void pasalintiIslaiduIrasa(Scanner sc) {
-        System.out.println(Messages.MESSAGE_FOR_OUTPUT_RECORD_DELETE.message);
-        int id = validateAndGetInt(sc);
-        if (islaidos.stream().anyMatch(o -> id == o.getId())) {
-            for (IslaiduIrasas ii : islaidos) {
-                if(ii.getId() == id) {
-                    islaidos.remove(ii);
-                    System.out.println(Messages.DELETE_SUCCESS.message);
-                    break;
+    private void changeStepByStep(Scanner sc, Irasas irasas, String field) {
+        switch (field) {
+            case "Suma" -> {
+                System.out.println("Suma: " + irasas.getSuma());
+                String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau");
+                if (answer.equals("1")) {
+                    System.out.println(Messages.ENTER_AMOUNT.message);
+                    irasas.setSuma(validateAndGetDouble(sc));
                 }
+            }
+            case "Ar bankas?" -> {
+                System.out.println("Ar bankas?: " + irasas.isAtsiskaitymoBudasBankas());
+                String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau");
+                if (answer.equals("1")) {
+                    System.out.println(Messages.BANK_PAYMENT.message);
+                    irasas.setAtsiskaitymoBudasBankas(taipNe(sc));
+                }
+            }
+            case "Komentaras" -> {
+                System.out.println("Komentaras: " + irasas.getPapildomaInfo());
+                String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau");
+                if (answer.equals("1")) {
+                    System.out.println(Messages.ENTER_COMMENT.message);
+                    irasas.setPapildomaInfo(validateAndGetString(sc));
+                }
+            }
+            case "Kategorija" -> {
+                if (irasas instanceof IslaiduIrasas) {
+                    System.out.println("Kategorija: " + ((IslaiduIrasas) irasas).getIslaiduKategorija());
+                    String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau");
+                    if (answer.equals("1")) {
+                        System.out.println(Messages.ENTER_CATEGORY.message);
+                        ((IslaiduIrasas) irasas).setIslaiduKategorija(validateAndGetString(sc));
+                    }
+                }
+                if (irasas instanceof PajamuIrasas) {
+                    System.out.println("Kategorija: " + ((PajamuIrasas) irasas).getPajamuKategorija());
+                    String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau");
+                    if (answer.equals("1")) {
+                        System.out.println(Messages.ENTER_CATEGORY.message);
+                        ((PajamuIrasas) irasas).setPajamuKategorija(validateAndGetString(sc));
+                    }
+                }
+            }
+            case "Tipas" -> {
+                if (irasas instanceof IslaiduIrasas) {
+                    System.out.println("Tipas: " + ((IslaiduIrasas) irasas).getIslaiduTipas());
+                    String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau");
+                    if (answer.equals("1")) {
+                        System.out.println(Messages.INCOME_TYPE.message);
+                        ((IslaiduIrasas) irasas).setIslaiduTipas(validateAndGetType(sc, "2"));
+                    }
+                }
+                if (irasas instanceof PajamuIrasas) {
+                    System.out.println("Tipas: " + ((PajamuIrasas) irasas).getPajamuTipas());
+                    String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau");
+                    if (answer.equals("1")) {
+                        System.out.println(Messages.EXPENSE_TYPE.message);
+                        ((PajamuIrasas) irasas).setPajamuTipas(validateAndGetType(sc, "1"));
+                    }
+                }
+            }
+        }
+    }
+
+    private void pakeistiIrasa(Scanner sc) {
+        String modificationLevel = showSubmenuItems(sc, "[1] - Dalinis įrašo keitimas",
+                                                                "[2] - Pilnas įrašo keitimas");
+        atspausdintiVisaSarasa();
+        System.out.println(Messages.MESSAGE_FOR_RECORD_EDIT.message);
+        int id = validateAndGetInt(sc);
+        if (irasai.stream().anyMatch(o -> id == o.getId())) {
+            if (modificationLevel.equals("1")) {
+                Irasas irasas = gautiIrasa(id);
+                double suma = irasas.getSuma();
+                boolean arBankas = irasas.isAtsiskaitymoBudasBankas();
+                String komentaras = irasas.getPapildomaInfo();
+                String kategorija = "";
+                String tipas = "";
+                if (irasas instanceof IslaiduIrasas) {
+                    kategorija = ((IslaiduIrasas) irasas).getIslaiduKategorija();
+                    tipas = ((IslaiduIrasas) irasas).getIslaiduTipas();
+                }
+                if(irasas instanceof PajamuIrasas) {
+                    kategorija = ((PajamuIrasas) irasas).getPajamuKategorija();
+                    tipas = ((PajamuIrasas) irasas).getPajamuTipas();
+                }
+                changeStepByStep(sc, irasas, "Suma");
+                changeStepByStep(sc, irasas, "Ar bankas?");
+                changeStepByStep(sc, irasas, "Komentaras");
+                changeStepByStep(sc, irasas, "Kategorija");
+                changeStepByStep(sc, irasas, "Tipas");
+                String kategorijaPoPakeitimo = "";
+                String tipasPoPakeitimo = "";
+                if (irasas instanceof IslaiduIrasas) {
+                    kategorijaPoPakeitimo = ((IslaiduIrasas) irasas).getIslaiduKategorija();
+                    tipasPoPakeitimo = ((IslaiduIrasas) irasas).getIslaiduTipas();
+                }
+                if(irasas instanceof PajamuIrasas) {
+                    kategorijaPoPakeitimo = ((PajamuIrasas) irasas).getPajamuKategorija();
+                    tipasPoPakeitimo = ((PajamuIrasas) irasas).getPajamuTipas();
+                }
+                if (suma != irasas.getSuma()
+                        || arBankas != irasas.isAtsiskaitymoBudasBankas()
+                        || !komentaras.equals(irasas.getPapildomaInfo())
+                        || !kategorija.equals(kategorijaPoPakeitimo)
+                        || !tipas.equals(tipasPoPakeitimo)) {
+                    if (irasas instanceof IslaiduIrasas) {
+                        ((IslaiduIrasas) irasas).setDataSuLaiku(LocalDateTime.now());
+                    }
+                    if (irasas instanceof PajamuIrasas) {
+                        ((PajamuIrasas) irasas).setData(LocalDate.now());
+                    }
+                    System.out.println(Messages.EDIT_SUCCESS.message);
+                } else {
+                    System.out.println(Messages.NOTHING_CHANGED.message);
+                }
+                atspausdintiVisaSarasa();
+            }
+            if (modificationLevel.equals("2")) {
+                atnaujintiIrasa(sukurtiIrasa(sc, id));
+                System.out.println(Messages.EDIT_SUCCESS.message);
+                atspausdintiVisaSarasa();
             }
         } else {
             System.out.println(String.format(Messages.RECORD_NOT_FOUND.message, id));
         }
-        atspausdintiIslaidas();
+    }
 
+    private void atnaujintiIrasa(Irasas irasas) {
+        for (Irasas i : irasai) {
+            if(i.equals(irasas)) {
+                int index = irasai.indexOf(i);
+                irasai.set(index, irasas);
+            }
+        }
     }
 
     private void printTableTitle() {
         System.out.println(String.format(Messages.TITLE_FORMAT.message,
-                "Id", "Suma", "Data", "Kategorija", "Ar bankas?", "Komentaras", "Tipas"));
+                "Id", "Suma", "Ar bankas?", "Komentaras", "Įrašo tipas", "Data", "Kategorija",  "Tipas"));
     }
 
     private double validateAndGetDouble(Scanner sc) {
@@ -116,6 +317,7 @@ public class Biudzetas {
         }
         return suma;
     }
+
     private int validateAndGetInt(Scanner sc) {
         int id = 0;
         boolean isNotInt = true;
@@ -165,81 +367,54 @@ public class Biudzetas {
 
     private String validateAndGetType(Scanner sc, String type) {
         String result = "";
+        String pajamuMeniu1 = "[1] - Darbo pajamos";
+        String pajamuMeniu2 = "[2] - Dividendų pajamos";
+        String pajamuMeniu3 = "[3] - Pardavimų pajamos";
+        String islaiduMeniu1 = "[1] - Asmeninės išlaidos";
+        String islaiduMeniu2 = "[2] - Veiklos išlaidos";
+        String islaiduMeniu3 = "[3] - Mokesčiai";
+            if (type.equals("1")) {
+                String answer = showSubmenuItems(sc, pajamuMeniu1, pajamuMeniu2, pajamuMeniu3);
+                switch (answer) {
+                    case "1" -> result = pajamuMeniu1.substring(6);
+                    case "2" -> result = pajamuMeniu2.substring(6);
+                    case "3" -> result = pajamuMeniu3.substring(6);
+                }
+            }
+            if (type.equals("2")) {
+                String answer = showSubmenuItems(sc, islaiduMeniu1, islaiduMeniu2, islaiduMeniu3);
+                switch (answer) {
+                    case "1" -> result = islaiduMeniu1.substring(6);
+                    case "2" -> result = islaiduMeniu2.substring(6);
+                    case "3" -> result = islaiduMeniu3.substring(6);
+                }
+            }
+        return result;
+    }
+
+    private String showSubmenuItems(Scanner sc, String...choices) {
+        String result = "";
         boolean isTrue = true;
-        String type1 = "";
-        String type2 = "";
-        String type3 = "";
         while (isTrue) {
-            if(type.equals("out")){
-                System.out.println("""
-                        
-                        [1] - Asmenines islaidos
-                        [2] - Veiklos islaidos
-                        [3] - Mokesčiai
-                        """);
-                type1 = "Asmenines islaidos";
-                type2 = "Veiklos islaidos";
-                type3 = "Mokesčiai";
+            for (int i = 0; i < choices.length; i++) {
+                System.out.println(choices[i]);
             }
-            if(type.equals("in")){
-                System.out.println("""
-                        
-                        [1] - Darbo pajamos
-                        [2] - Dividendų pajamos
-                        [3] - Pardavimų pajamos
-                        """);
-                type1 = "Darbo pajamos";
-                type2 = "Dividendų pajamos";
-                type3 = "Pardavimų pajamos";
-            }
-            String input = sc.nextLine().toUpperCase();
-            switch (input) {
-                case "1" -> {
-                    result = type1;
+            String input = sc.nextLine();
+            try {
+                if (Integer.parseInt(input) > 0 &&  Integer.parseInt(input) <= choices.length) {
+                    result = input;
                     isTrue = false;
+                } else {
+                    System.out.println(Messages.BAD_INPUT.message);
                 }
-                case "2" -> {
-                    result = type2;
-                    isTrue = false;
-                }
-                case "3" -> {
-                    result = type3;
-                    isTrue = false;
-                }
-                default -> System.out.println(Messages.BAD_INPUT.message);
+            } catch (NumberFormatException e) {
+                System.out.println(Messages.BAD_INPUT.message);
             }
         }
         return result;
     }
 
-    private void addToArray(ArrayList<PajamuIrasas> arrayIn, PajamuIrasas pi, ArrayList<IslaiduIrasas> arrayOut, IslaiduIrasas ii) {
-        if (arrayIn == null && pi == null) {
-            arrayOut.add(ii);
-        } else {
-            arrayIn.add(pi);
-        }
-        System.out.println(Messages.INPUT_SUCCESS.message);
-    }
-
-    private void makeRecord(ArrayList<IslaiduIrasas> islaidos, ArrayList<PajamuIrasas> pajamos, Scanner sc) {
-        System.out.println(Messages.ENTER_AMOUNT.message);
-        double suma = validateAndGetDouble(sc);
-        System.out.println(Messages.ENTER_CATEGORY.message);
-        String kategorija = validateAndGetString(sc);
-        System.out.println(Messages.BANK_PAYMENT.message);
-        boolean atsiskaitymoBudasBankas = taipNe(sc);
-        System.out.println(Messages.ENTER_COMMENT.message);
-        String papildomaInfo = validateAndGetString(sc);
-        if (islaidos == null) {
-            System.out.println(Messages.INCOME_TYPE.message);
-            String pajamuTipas = validateAndGetType(sc, "in");
-            PajamuIrasas pi = new PajamuIrasas(++id, suma, LocalDate.now(), kategorija, atsiskaitymoBudasBankas, papildomaInfo, pajamuTipas);
-            addToArray(pajamos, pi, null, null);
-        } else {
-            System.out.println(Messages.EXPENSE_TYPE.message);
-            String islaiduTipas = validateAndGetType(sc, "out");
-            IslaiduIrasas ii = new IslaiduIrasas(++id, suma, LocalDateTime.now(), kategorija, atsiskaitymoBudasBankas, papildomaInfo, islaiduTipas);
-            addToArray(null, null, islaidos, ii);
-        }
+    public ArrayList<Irasas> getIrasai() {
+        return irasai;
     }
 }

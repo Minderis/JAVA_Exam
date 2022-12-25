@@ -1,3 +1,5 @@
+import java.io.File;
+import java.time.LocalDate;
 import java.util.Scanner;
 
 public class Programa {
@@ -8,28 +10,26 @@ public class Programa {
         while (isTrue) {
                 System.out.println("""
                         
-                        [1] - įvesti pajamas
-                        [2] - įvesti išlaidas
+                        [1] - sukurti įrašą
+                        [2] - redaguoti įrašą
                         [3] - informacija apie pajamas
                         [4] - informacija apie išlaidas
                         [5] - balansas
-                        [6] - atspausdinti pajamas
-                        [7] - atspausdinti islaidas
-                        [8] - pašalinti pajamų įrašą
-                        [9] - pašalinti išlaidų įrašą
+                        [6] - atspausdinti pajamu įrašus
+                        [7] - atspausdinti išlaidų įrašus
+                        [8] - atspausdinti visą sąrašą
                         [0] - baigti darbą su programa
                         """);
                 String input = sc.nextLine();
                 switch (input) {
-                    case "1" -> biudzetas.pridetiPajamuIrasa(sc);
-                    case "2" -> biudzetas.pridetiIslaiduIrasa(sc);
-                    case "3" -> System.out.println("Viso gauta: " + biudzetas.gautiPajamas());
-                    case "4" -> System.out.println("Viso išleista: " + biudzetas.gautiIslaidas());
+                    case "1" -> biudzetas.sukurtiIrPridetiIrasa(sc);
+                    case "2" -> biudzetas.redaguotiIrasa(sc);
+                    case "3" -> System.out.println("Viso gauta: " + biudzetas.gautiVisasPajamas());
+                    case "4" -> System.out.println("Viso išleista: " + biudzetas.gautiVisasIslaidas());
                     case "5" -> System.out.println("Sąskaitos balansas: " + biudzetas.balansas());
-                    case "6" -> biudzetas.atspausdintiPajamas();
-                    case "7" -> biudzetas.atspausdintiIslaidas();
-                    case "8" -> biudzetas.pasalintiPajamuIrasa(sc);
-                    case "9" -> biudzetas.pasalintiIslaiduIrasa(sc);
+                    case "6" -> biudzetas.atspausdintiPajamuIrasus();
+                    case "7" -> biudzetas.atspausdintiIslaiduIrasus();
+                    case "8" -> biudzetas.atspausdintiVisaSarasa();
                     case "0" -> {
                         System.out.println("Programa baigė darbą.");
                         isTrue = false;
