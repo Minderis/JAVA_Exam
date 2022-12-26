@@ -12,7 +12,7 @@ public class Biudzetas {
     private final ArrayList<Irasas> irasai = new ArrayList<>();
 
     public void sukurtiIrPridetiIrasa(Scanner sc) {
-        Irasas irasas = sukurtiIrasa(sc, null);
+        Irasas irasas = sukurtiIrasa(sc);
         pridetiIrasa(irasas);
     }
 
@@ -68,7 +68,7 @@ public class Biudzetas {
 
     public void atspausdintiVisaSarasa() {
         printTableTitle();
-        for (Irasas irasas : irasai) {
+        for (Irasas irasas : getIrasai()) {
             System.out.println(irasas);
         }
     }
@@ -88,16 +88,20 @@ public class Biudzetas {
         return null;
     }
 
+    private Irasas sukurtiIrasa(Scanner sc) {
+        int myId = id++;
+        return gautiSukurtaIrasa(sc, myId);
+    }
+
     private Irasas sukurtiIrasa(Scanner sc, Integer integer) {
-        int myId;
-        if (integer != null) {
-            myId = integer;
-        } else {
-            myId = id++;
-        }
+        int myId = integer;
+        return gautiSukurtaIrasa(sc, myId);
+    }
+
+    private Irasas gautiSukurtaIrasa(Scanner sc, int id) {
         System.out.println(Messages.RECORD_TYPE.message);
         String type = showSubmenuItems(sc, "[1] - Pajamų įrašas",
-                                                    "[2] - Išlaidų įrašas");
+                "[2] - Išlaidų įrašas");
         System.out.println(Messages.ENTER_AMOUNT.message);
         double suma = validateAndGetDouble(sc);
         System.out.println(Messages.ENTER_CATEGORY.message);
@@ -110,14 +114,12 @@ public class Biudzetas {
             String irasoTipas = "Pajamos";
             System.out.println(Messages.INCOME_TYPE.message);
             String pajamuTipas = validateAndGetType(sc, type);
-            PajamuIrasas pi = new PajamuIrasas(myId, suma, LocalDate.now(), kategorija, atsiskaitymoBudasBankas, papildomaInfo, pajamuTipas, irasoTipas);
-            return  pi;
+            return new PajamuIrasas(id, suma, LocalDate.now(), kategorija, atsiskaitymoBudasBankas, papildomaInfo, pajamuTipas, irasoTipas);
         } else if (type.equals("2")) {
             String irasoTipas = "Išlaidos";
             System.out.println(Messages.EXPENSE_TYPE.message);
             String islaiduTipas = validateAndGetType(sc, type);
-            IslaiduIrasas ii = new IslaiduIrasas(myId, suma, LocalDateTime.now(), kategorija, atsiskaitymoBudasBankas, papildomaInfo, islaiduTipas, irasoTipas);
-            return  ii;
+            return new IslaiduIrasas(id, suma, LocalDateTime.now(), kategorija, atsiskaitymoBudasBankas, papildomaInfo, islaiduTipas, irasoTipas);
         } else {
             return null;
         }
@@ -235,6 +237,7 @@ public class Biudzetas {
         if (irasai.stream().anyMatch(o -> id == o.getId())) {
             if (modificationLevel.equals("1")) {
                 Irasas irasas = gautiIrasa(id);
+                assert irasas != null;
                 double suma = irasas.getSuma();
                 boolean arBankas = irasas.isAtsiskaitymoBudasBankas();
                 String komentaras = irasas.getPapildomaInfo();
