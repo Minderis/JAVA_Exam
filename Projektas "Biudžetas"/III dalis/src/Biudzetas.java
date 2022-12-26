@@ -284,7 +284,7 @@ public class Biudzetas {
                     isOver = changeStepByStep(sc, irasas, "Kategorija");
                 }
                 if (!isOver) {
-                    isOver = changeStepByStep(sc, irasas, "Tipas");
+                    changeStepByStep(sc, irasas, "Tipas");
                 }
                 String kategorijaPoPakeitimo = "";
                 String tipasPoPakeitimo = "";
