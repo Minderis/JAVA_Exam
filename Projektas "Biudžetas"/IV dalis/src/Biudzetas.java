@@ -167,7 +167,7 @@ public class Biudzetas {
                 }
             }
         } else {
-            System.out.println(String.format(Messages.RECORD_NOT_FOUND.message, id));
+            System.out.printf((Messages.RECORD_NOT_FOUND.message) + "%n", id);
         }
         atspausdintiVisaSarasa();
     }
@@ -202,6 +202,9 @@ public class Biudzetas {
                 if (answer.equals("1")) {
                     System.out.println(Messages.ENTER_COMMENT.message);
                     irasas.setPapildomaInfo(validateAndGetString(sc));
+                }
+                if (answer.equals("3")) {
+                    return true;
                 }
             }
             case "Kategorija" -> {
@@ -290,7 +293,7 @@ public class Biudzetas {
                     isOver = changeStepByStep(sc, irasas, "Kategorija");
                 }
                 if (!isOver) {
-                    isOver = changeStepByStep(sc, irasas, "Tipas");
+                    changeStepByStep(sc, irasas, "Tipas");
                 }
                 String kategorijaPoPakeitimo = "";
                 String tipasPoPakeitimo = "";
@@ -325,7 +328,7 @@ public class Biudzetas {
                 atspausdintiVisaSarasa();
             }
         } else {
-            System.out.println(String.format(Messages.RECORD_NOT_FOUND.message, id));
+            System.out.printf((Messages.RECORD_NOT_FOUND.message) + "%n", id);
         }
     }
 
@@ -339,8 +342,8 @@ public class Biudzetas {
     }
 
     private void printTableTitle() {
-        System.out.println(String.format(Messages.TITLE_FORMAT.message,
-                "Id", "Suma", "Ar bankas?", "Komentaras", "Įrašo tipas", "Data", "Kategorija",  "Tipas"));
+        System.out.printf((Messages.TITLE_FORMAT.message) + "%n",
+                "Id", "Suma", "Ar bankas?", "Komentaras", "Įrašo tipas", "Data", "Kategorija",  "Tipas");
     }
 
     private double validateAndGetDouble(Scanner sc) {
@@ -435,8 +438,8 @@ public class Biudzetas {
         String result = "";
         boolean isTrue = true;
         while (isTrue) {
-            for (int i = 0; i < choices.length; i++) {
-                System.out.println(choices[i]);
+            for (String choice : choices) {
+                System.out.println(choice);
             }
             String input = sc.nextLine();
             try {
