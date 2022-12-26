@@ -20,6 +20,9 @@ public enum Messages {
     SUCCESS_IMPORT("Duomenų failas sėkmingai importuotas."),
     NOT_EXIST_OR_INVALID_FORMAT("Irašų failas neegzistuoja arba failas netinkamo formato!"),
     RECORD_TO_STRING_FORMAT("| %-20s | %-20s | %-20s |"),
+    EDIT("[1] - Redaguoti"),
+    CONTINUE("[2] - Toliau"),
+    QUIT("[3] - Baigti redagavimą"),
     MAIN_MENU("""
                         
                         [1] - sukurti įrašą

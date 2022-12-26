@@ -176,7 +176,7 @@ public class Biudzetas {
         switch (field) {
             case "Suma" -> {
                 System.out.println("Suma: " + irasas.getSuma());
-                String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau", "[3] - Baigti redagavimą");
+                String answer = showSubmenuItems(sc, Messages.EDIT.message, Messages.CONTINUE.message, Messages.QUIT.message);
                 if (answer.equals("1")) {
                     System.out.println(Messages.ENTER_AMOUNT.message);
                     irasas.setSuma(validateAndGetDouble(sc));
@@ -187,7 +187,7 @@ public class Biudzetas {
             }
             case "Ar bankas?" -> {
                 System.out.println("Ar bankas?: " + irasas.isAtsiskaitymoBudasBankas());
-                String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau", "[3] - Baigti redagavimą");
+                String answer = showSubmenuItems(sc, Messages.EDIT.message, Messages.CONTINUE.message, Messages.QUIT.message);
                 if (answer.equals("1")) {
                     System.out.println(Messages.BANK_PAYMENT.message);
                     irasas.setAtsiskaitymoBudasBankas(taipNe(sc));
@@ -198,7 +198,7 @@ public class Biudzetas {
             }
             case "Komentaras" -> {
                 System.out.println("Komentaras: " + irasas.getPapildomaInfo());
-                String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau", "[3] - Baigti redagavimą");
+                String answer = showSubmenuItems(sc, Messages.EDIT.message, Messages.CONTINUE.message, Messages.QUIT.message);
                 if (answer.equals("1")) {
                     System.out.println(Messages.ENTER_COMMENT.message);
                     irasas.setPapildomaInfo(validateAndGetString(sc));
@@ -210,7 +210,7 @@ public class Biudzetas {
             case "Kategorija" -> {
                 if (irasas instanceof IslaiduIrasas) {
                     System.out.println("Kategorija: " + ((IslaiduIrasas) irasas).getIslaiduKategorija());
-                    String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau", "[3] - Baigti redagavimą");
+                    String answer = showSubmenuItems(sc, Messages.EDIT.message, Messages.CONTINUE.message, Messages.QUIT.message);
                     if (answer.equals("1")) {
                         System.out.println(Messages.ENTER_CATEGORY.message);
                         ((IslaiduIrasas) irasas).setIslaiduKategorija(validateAndGetString(sc));
@@ -221,7 +221,7 @@ public class Biudzetas {
                 }
                 if (irasas instanceof PajamuIrasas) {
                     System.out.println("Kategorija: " + ((PajamuIrasas) irasas).getPajamuKategorija());
-                    String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau", "[3] - Baigti redagavimą");
+                    String answer = showSubmenuItems(sc, Messages.EDIT.message, Messages.CONTINUE.message, Messages.QUIT.message);
                     if (answer.equals("1")) {
                         System.out.println(Messages.ENTER_CATEGORY.message);
                         ((PajamuIrasas) irasas).setPajamuKategorija(validateAndGetString(sc));
@@ -234,7 +234,7 @@ public class Biudzetas {
             case "Tipas" -> {
                 if (irasas instanceof IslaiduIrasas) {
                     System.out.println("Tipas: " + ((IslaiduIrasas) irasas).getIslaiduTipas());
-                    String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau", "[3] - Baigti redagavimą");
+                    String answer = showSubmenuItems(sc, Messages.EDIT.message, Messages.CONTINUE.message, Messages.QUIT.message);
                     if (answer.equals("1")) {
                         System.out.println(Messages.INCOME_TYPE.message);
                         ((IslaiduIrasas) irasas).setIslaiduTipas(validateAndGetType(sc, "2"));
@@ -245,7 +245,7 @@ public class Biudzetas {
                 }
                 if (irasas instanceof PajamuIrasas) {
                     System.out.println("Tipas: " + ((PajamuIrasas) irasas).getPajamuTipas());
-                    String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau", "[3] - Baigti redagavimą");
+                    String answer = showSubmenuItems(sc, Messages.EDIT.message, Messages.CONTINUE.message, Messages.QUIT.message);
                     if (answer.equals("1")) {
                         System.out.println(Messages.EXPENSE_TYPE.message);
                         ((PajamuIrasas) irasas).setPajamuTipas(validateAndGetType(sc, "1"));
