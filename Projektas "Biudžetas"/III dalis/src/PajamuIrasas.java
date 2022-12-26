@@ -14,10 +14,6 @@ public class PajamuIrasas extends Irasas{
         this.pajamuTipas = pajamuTipas;
     }
 
-    public LocalDate getData() {
-        return data;
-    }
-
     public String getPajamuKategorija() {
         return pajamuKategorija;
     }

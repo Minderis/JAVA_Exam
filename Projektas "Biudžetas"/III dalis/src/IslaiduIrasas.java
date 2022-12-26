@@ -16,10 +16,6 @@ public class IslaiduIrasas extends Irasas{
         this.islaiduTipas = islaiduTipas;
     }
 
-    public LocalDateTime getDataSuLaiku() {
-        return dataSuLaiku;
-    }
-
     public String getIslaiduKategorija() {
         return islaiduKategorija;
     }
