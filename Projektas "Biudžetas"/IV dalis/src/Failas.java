@@ -28,33 +28,26 @@ public class Failas {
     }
 
     public ArrayList<Irasas> gautiDuomennis(Scanner sc) {
-        System.out.println("""
-                Reikalavimai failo stulpelių formatui:
-                1 stulpelis: int Id - laukas neprivalomas (gali nebūti netgi stulpelio);
-                2 stulpelis: double Suma - laukas privalomas (bet kokia double reikšmė);
-                3 stulpelis: boolean Ar bankas? - laukas privalomas (TRUE arba FALSE reikšmė, esant netinkamam formatui reikšmė bus nustatyta į FALSE);
-                4 stulpelis: String Komentaras - laukas privalomas (bet kokia String reikšmė);
-                5 stulpelis: String Įrašo tipas - laukas privalomas ("Pajamos" arba "Išlaidos" reikšmė);
-                6 stulpelis: LocalDate arba LocalDateTime  Data - laukas privalomas (Pajamų įrašui formatas: yyyy-MM-dd; Išlaidų įrašui formatas: yyyy-MM-dd HH:mm);
-                7 stulpelis: String Kategorija - laukas privalomas (bet kokia String reikšmė);
-                8 stulpelis: String Tipas - laukas privalomas (bet kokia String reikšmė, p.s. redaguojant tokį įrašą išlieka ribotas tipų pasirinkimas);
-                STULPELIAI TURI BŪTI ATSKIRTI SKIRTUKU ";".
-                """);
-        System.out.println("Nurodykite pilną kelią iki failo arba \"src/...\", jei failas guli po src direktorija:");
+        System.out.println(Messages.FILE_REQUIREMENTS.message);
+        System.out.println("Nurodykite pilną kelią iki failo arba \"src/...\", jei failas guli po src direktorija (failas testavimui: src/test.csv):");
         String path = sc.nextLine();
         File file = new File(path);
         ArrayList<Irasas> irasai = new ArrayList<>();
-        int indexOffset = 0;
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             int currentLine = 1;
             String line = br.readLine();
             while (line != null) {
+                int indexOffset = 0;
                 String[] splittedValues = line.split(";");
                 if (splittedValues.length == 7) {
                     indexOffset = -1;
-                } else if (splittedValues.length < 7 || splittedValues.length > 8) {
-                    return null;
+                } else if (splittedValues.length < 7) {
+                    System.out.println("Failo eilutėje Nr. " + currentLine + " trūksta stulpelių! Ji bus ignoruota.");
+                    line = br.readLine();
+                    currentLine++;
+                    Biudzetas.id++;
+                    continue;
                 }
                 try {
                     if (line.contains("Pajamos")) {

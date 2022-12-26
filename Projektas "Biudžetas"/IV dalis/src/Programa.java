@@ -8,20 +8,7 @@ public class Programa {
         Scanner sc = new Scanner(System.in);
         boolean isTrue = true;
         while (isTrue) {
-                System.out.println("""
-                        
-                        [1] - sukurti įrašą
-                        [2] - redaguoti įrašą
-                        [3] - informacija apie pajamas
-                        [4] - informacija apie išlaidas
-                        [5] - balansas
-                        [6] - atspausdinti pajamu įrašus
-                        [7] - atspausdinti išlaidų įrašus
-                        [8] - atspausdinti visą sąrašą
-                        [9] - išsaugoti duomenis
-                        [0] - užkrauti duomenis
-                        [*] - baigti darbą su programa
-                        """);
+                System.out.println(Messages.MAIN_MENU.message);
                 String input = sc.nextLine();
                 switch (input) {
                     case "1" -> biudzetas.sukurtiIrPridetiIrasa(sc);

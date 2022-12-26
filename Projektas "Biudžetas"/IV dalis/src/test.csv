@@ -1,4 +1,4 @@
-0;100.2345;FALSE;Atlyginimas;Pajamos;2022-12-26;Alga;Darbo pajamos
+0;100.2345;FALSE;Atlyginimas;Pajamos
 9;4567.4;FALSE;Akcijos;Pajamos;2022-12-24;AT&T;Dividendų pajamos
 16;3452.645;TRUE;Kuras;Išlaidos;2022-12-24 12:45;Benzinas;Asmeninės išlaidos
 8;AA;FALSE;Nuoma;Pajamos;2022-12-25;Butno nuoma;Dividendų pajamos
@@ -13,7 +13,7 @@
 2;BB;FALSE;Premija;Pajamos;2022-12-26;Gavau premiją;Darbo pajamos
 18;53.243;TRUE;Maistas;Išlaidos;2022-12-24 12:45;Iki;Asmeninės išlaidos
 14;64.64;TRUE;Ebay;Pajamos;2022-12-24;iPhone;Pardavimų pajamos
-3;567.7;FALSE;Atlyginimas;Pajamos;2022-12-25;Laiku alga;Darbo pajamos
+3;567.7;FALSE
 15;745.2344;TRUE;Maistas;Išlaidos;2022-12-24 12:45;Maxima;Asmeninės išlaidos
 20;54.654;TRUE;Maistas;Išlaidos;2022-12-24 12:45;Maxima;Veiklos išlaidos
 24;876.3;TRUE;Komunaliniai;Išlaidos;2022-12-24 12:45;Nuomuojamas butas;Mokesčiai
