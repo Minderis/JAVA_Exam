@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class Biudzetas {
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00");
 
-    private static int id = 0;
+    private static int id = 1;
 
     private final ArrayList<Irasas> irasai = new ArrayList<>();
 
@@ -80,11 +80,11 @@ public class Biudzetas {
     }
 
     private Irasas gautiIrasa(int id) {
-            for (Irasas irasas : irasai) {
-                if (irasas.getId() == id) {
-                    return irasas;
-                }
+        for (Irasas irasas : irasai) {
+            if (irasas.getId() == id) {
+                return irasas;
             }
+        }
         return null;
     }
 
@@ -127,8 +127,8 @@ public class Biudzetas {
 
     private ArrayList<PajamuIrasas> gautiPajamuIrasus() {
         ArrayList<PajamuIrasas> pajamuIrasai = new ArrayList<>();
-        for (Irasas irasas : irasai){
-            if(irasas instanceof PajamuIrasas) {
+        for (Irasas irasas : irasai) {
+            if (irasas instanceof PajamuIrasas) {
                 pajamuIrasai.add((PajamuIrasas) irasas);
             }
         }
@@ -137,8 +137,8 @@ public class Biudzetas {
 
     private ArrayList<IslaiduIrasas> gautiIslaiduIrasus() {
         ArrayList<IslaiduIrasas> islaiduIrasai = new ArrayList<>();
-        for (Irasas irasas : irasai){
-            if(irasas instanceof IslaiduIrasas) {
+        for (Irasas irasas : irasai) {
+            if (irasas instanceof IslaiduIrasas) {
                 islaiduIrasai.add((IslaiduIrasas) irasas);
             }
         }
@@ -163,74 +163,96 @@ public class Biudzetas {
         atspausdintiVisaSarasa();
     }
 
-    private void changeStepByStep(Scanner sc, Irasas irasas, String field) {
+    private boolean changeStepByStep(Scanner sc, Irasas irasas, String field) {
         switch (field) {
             case "Suma" -> {
                 System.out.println("Suma: " + irasas.getSuma());
-                String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau");
+                String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau", "[3] - Baigti redagavimą");
                 if (answer.equals("1")) {
                     System.out.println(Messages.ENTER_AMOUNT.message);
                     irasas.setSuma(validateAndGetDouble(sc));
                 }
+                if (answer.equals("3")) {
+                    return true;
+                }
             }
             case "Ar bankas?" -> {
                 System.out.println("Ar bankas?: " + irasas.isAtsiskaitymoBudasBankas());
-                String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau");
+                String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau", "[3] - Baigti redagavimą");
                 if (answer.equals("1")) {
                     System.out.println(Messages.BANK_PAYMENT.message);
                     irasas.setAtsiskaitymoBudasBankas(taipNe(sc));
                 }
+                if (answer.equals("3")) {
+                    return true;
+                }
             }
             case "Komentaras" -> {
                 System.out.println("Komentaras: " + irasas.getPapildomaInfo());
-                String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau");
+                String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau", "[3] - Baigti redagavimą");
                 if (answer.equals("1")) {
                     System.out.println(Messages.ENTER_COMMENT.message);
                     irasas.setPapildomaInfo(validateAndGetString(sc));
+                }
+                if (answer.equals("3")) {
+                    return true;
                 }
             }
             case "Kategorija" -> {
                 if (irasas instanceof IslaiduIrasas) {
                     System.out.println("Kategorija: " + ((IslaiduIrasas) irasas).getIslaiduKategorija());
-                    String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau");
+                    String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau", "[3] - Baigti redagavimą");
                     if (answer.equals("1")) {
                         System.out.println(Messages.ENTER_CATEGORY.message);
                         ((IslaiduIrasas) irasas).setIslaiduKategorija(validateAndGetString(sc));
                     }
+                    if (answer.equals("3")) {
+                        return true;
+                    }
                 }
                 if (irasas instanceof PajamuIrasas) {
                     System.out.println("Kategorija: " + ((PajamuIrasas) irasas).getPajamuKategorija());
-                    String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau");
+                    String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau", "[3] - Baigti redagavimą");
                     if (answer.equals("1")) {
                         System.out.println(Messages.ENTER_CATEGORY.message);
                         ((PajamuIrasas) irasas).setPajamuKategorija(validateAndGetString(sc));
+                    }
+                    if (answer.equals("3")) {
+                        return true;
                     }
                 }
             }
             case "Tipas" -> {
                 if (irasas instanceof IslaiduIrasas) {
                     System.out.println("Tipas: " + ((IslaiduIrasas) irasas).getIslaiduTipas());
-                    String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau");
+                    String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau", "[3] - Baigti redagavimą");
                     if (answer.equals("1")) {
                         System.out.println(Messages.INCOME_TYPE.message);
                         ((IslaiduIrasas) irasas).setIslaiduTipas(validateAndGetType(sc, "2"));
                     }
+                    if (answer.equals("3")) {
+                        return true;
+                    }
                 }
                 if (irasas instanceof PajamuIrasas) {
                     System.out.println("Tipas: " + ((PajamuIrasas) irasas).getPajamuTipas());
-                    String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau");
+                    String answer = showSubmenuItems(sc, "[1] - Redaguoti", "[2] - Toliau", "[3] - Baigti redagavimą");
                     if (answer.equals("1")) {
                         System.out.println(Messages.EXPENSE_TYPE.message);
                         ((PajamuIrasas) irasas).setPajamuTipas(validateAndGetType(sc, "1"));
                     }
+                    if (answer.equals("3")) {
+                        return true;
+                    }
                 }
             }
         }
+        return false;
     }
 
     private void pakeistiIrasa(Scanner sc) {
         String modificationLevel = showSubmenuItems(sc, "[1] - Dalinis įrašo keitimas",
-                                                                "[2] - Pilnas įrašo keitimas");
+                "[2] - Pilnas įrašo keitimas");
         atspausdintiVisaSarasa();
         System.out.println(Messages.MESSAGE_FOR_RECORD_EDIT.message);
         int id = validateAndGetInt(sc);
@@ -247,22 +269,30 @@ public class Biudzetas {
                     kategorija = ((IslaiduIrasas) irasas).getIslaiduKategorija();
                     tipas = ((IslaiduIrasas) irasas).getIslaiduTipas();
                 }
-                if(irasas instanceof PajamuIrasas) {
+                if (irasas instanceof PajamuIrasas) {
                     kategorija = ((PajamuIrasas) irasas).getPajamuKategorija();
                     tipas = ((PajamuIrasas) irasas).getPajamuTipas();
                 }
-                changeStepByStep(sc, irasas, "Suma");
-                changeStepByStep(sc, irasas, "Ar bankas?");
-                changeStepByStep(sc, irasas, "Komentaras");
-                changeStepByStep(sc, irasas, "Kategorija");
-                changeStepByStep(sc, irasas, "Tipas");
+                boolean isOver = changeStepByStep(sc, irasas, "Suma");
+                if (!isOver) {
+                    isOver = changeStepByStep(sc, irasas, "Ar bankas?");
+                }
+                if (!isOver) {
+                    isOver = changeStepByStep(sc, irasas, "Komentaras");
+                }
+                if (!isOver) {
+                    isOver = changeStepByStep(sc, irasas, "Kategorija");
+                }
+                if (!isOver) {
+                    isOver = changeStepByStep(sc, irasas, "Tipas");
+                }
                 String kategorijaPoPakeitimo = "";
                 String tipasPoPakeitimo = "";
                 if (irasas instanceof IslaiduIrasas) {
                     kategorijaPoPakeitimo = ((IslaiduIrasas) irasas).getIslaiduKategorija();
                     tipasPoPakeitimo = ((IslaiduIrasas) irasas).getIslaiduTipas();
                 }
-                if(irasas instanceof PajamuIrasas) {
+                if (irasas instanceof PajamuIrasas) {
                     kategorijaPoPakeitimo = ((PajamuIrasas) irasas).getPajamuKategorija();
                     tipasPoPakeitimo = ((PajamuIrasas) irasas).getPajamuTipas();
                 }
@@ -295,7 +325,7 @@ public class Biudzetas {
 
     private void atnaujintiIrasa(Irasas irasas) {
         for (Irasas i : irasai) {
-            if(i.equals(irasas)) {
+            if (i.equals(irasas)) {
                 int index = irasai.indexOf(i);
                 irasai.set(index, irasas);
             }
@@ -304,7 +334,7 @@ public class Biudzetas {
 
     private void printTableTitle() {
         System.out.println(String.format(Messages.TITLE_FORMAT.message,
-                "Id", "Suma", "Ar bankas?", "Komentaras", "Įrašo tipas", "Data", "Kategorija",  "Tipas"));
+                "Id", "Suma", "Ar bankas?", "Komentaras", "Įrašo tipas", "Data", "Kategorija", "Tipas"));
     }
 
     private double validateAndGetDouble(Scanner sc) {
@@ -376,26 +406,26 @@ public class Biudzetas {
         String islaiduMeniu1 = "[1] - Asmeninės išlaidos";
         String islaiduMeniu2 = "[2] - Veiklos išlaidos";
         String islaiduMeniu3 = "[3] - Mokesčiai";
-            if (type.equals("1")) {
-                String answer = showSubmenuItems(sc, pajamuMeniu1, pajamuMeniu2, pajamuMeniu3);
-                switch (answer) {
-                    case "1" -> result = pajamuMeniu1.substring(6);
-                    case "2" -> result = pajamuMeniu2.substring(6);
-                    case "3" -> result = pajamuMeniu3.substring(6);
-                }
+        if (type.equals("1")) {
+            String answer = showSubmenuItems(sc, pajamuMeniu1, pajamuMeniu2, pajamuMeniu3);
+            switch (answer) {
+                case "1" -> result = pajamuMeniu1.substring(6);
+                case "2" -> result = pajamuMeniu2.substring(6);
+                case "3" -> result = pajamuMeniu3.substring(6);
             }
-            if (type.equals("2")) {
-                String answer = showSubmenuItems(sc, islaiduMeniu1, islaiduMeniu2, islaiduMeniu3);
-                switch (answer) {
-                    case "1" -> result = islaiduMeniu1.substring(6);
-                    case "2" -> result = islaiduMeniu2.substring(6);
-                    case "3" -> result = islaiduMeniu3.substring(6);
-                }
+        }
+        if (type.equals("2")) {
+            String answer = showSubmenuItems(sc, islaiduMeniu1, islaiduMeniu2, islaiduMeniu3);
+            switch (answer) {
+                case "1" -> result = islaiduMeniu1.substring(6);
+                case "2" -> result = islaiduMeniu2.substring(6);
+                case "3" -> result = islaiduMeniu3.substring(6);
             }
+        }
         return result;
     }
 
-    private String showSubmenuItems(Scanner sc, String...choices) {
+    private String showSubmenuItems(Scanner sc, String... choices) {
         String result = "";
         boolean isTrue = true;
         while (isTrue) {
@@ -404,7 +434,7 @@ public class Biudzetas {
             }
             String input = sc.nextLine();
             try {
-                if (Integer.parseInt(input) > 0 &&  Integer.parseInt(input) <= choices.length) {
+                if (Integer.parseInt(input) > 0 && Integer.parseInt(input) <= choices.length) {
                     result = input;
                     isTrue = false;
                 } else {
