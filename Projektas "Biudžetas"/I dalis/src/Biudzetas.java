@@ -12,7 +12,7 @@ public class Biudzetas {
             System.out.println(Messages.ARRAY_FILLED.message);
             return;
         }
-        makeRecord(null, pajamos, sc);
+        makeRecord(pajamos, sc);
     }
 
     public void pridetiIslaiduIrasa(Scanner sc) {
@@ -20,7 +20,7 @@ public class Biudzetas {
             System.out.println(Messages.ARRAY_FILLED.message);
             return;
         }
-        makeRecord(islaidos, null, sc);
+        makeRecord(islaidos, sc);
     }
 
     public double gautiPajamas() {
@@ -89,26 +89,27 @@ public class Biudzetas {
         return isBank;
     }
 
-    private void addToArray(PajamuIrasas[] arrayIn, PajamuIrasas pi, IslaiduIrasas[] arrayOut, IslaiduIrasas ii) {
-        if (arrayIn == null && pi == null) {
-            for (int i = 0; i < arrayOut.length; i++) {
-                if (arrayOut[i] == null) {
-                    arrayOut[i] = ii;
-                    break;
-                }
-            }
-        } else {
-            for (int i = 0; i < arrayIn.length; i++) {
-                if (arrayIn[i] == null) {
-                    arrayIn[i] = pi;
-                    break;
-                }
+    private void addToArray(PajamuIrasas[] arrayIn, PajamuIrasas pi) {
+        for (int i = 0; i < arrayIn.length; i++) {
+            if (arrayIn[i] == null) {
+                arrayIn[i] = pi;
+                break;
             }
         }
         System.out.println(Messages.INPUT_SUCCESS.message);
     }
 
-    private void makeRecord(IslaiduIrasas[] islaidos, PajamuIrasas[] pajamos, Scanner sc) {
+    private void addToArray(IslaiduIrasas[] arrayOut, IslaiduIrasas ii) {
+        for (int i = 0; i < arrayOut.length; i++) {
+            if (arrayOut[i] == null) {
+                arrayOut[i] = ii;
+                break;
+            }
+        }
+        System.out.println(Messages.INPUT_SUCCESS.message);
+    }
+
+    private void makeRecord(IslaiduIrasas[] islaidos, Scanner sc) {
         System.out.println(Messages.ENTER_AMOUNT.message);
         double suma = validateAndGetDouble(sc);
         System.out.println(Messages.ENTER_CATEGORY.message);
@@ -117,12 +118,22 @@ public class Biudzetas {
         boolean atsiskaitymoBudasBankas = taipNe(sc);
         System.out.println(Messages.ENTER_COMMENT.message);
         String papildomaInfo = validateAndGetString(sc);
-        if (islaidos == null) {
-            PajamuIrasas pi = new PajamuIrasas(suma, LocalDate.now(), kategorija, atsiskaitymoBudasBankas, papildomaInfo);
-            addToArray(pajamos, pi, null, null);
-        } else {
-            IslaiduIrasas ii = new IslaiduIrasas(suma, LocalDateTime.now(), kategorija, atsiskaitymoBudasBankas, papildomaInfo);
-            addToArray(null, null, islaidos, ii);
-        }
+        IslaiduIrasas ii = new IslaiduIrasas(suma, LocalDateTime.now(), kategorija, atsiskaitymoBudasBankas, papildomaInfo);
+        addToArray(islaidos, ii);
+
     }
+
+    private void makeRecord(PajamuIrasas[] pajamos, Scanner sc) {
+        System.out.println(Messages.ENTER_AMOUNT.message);
+        double suma = validateAndGetDouble(sc);
+        System.out.println(Messages.ENTER_CATEGORY.message);
+        String kategorija = validateAndGetString(sc);
+        System.out.println(Messages.BANK_PAYMENT.message);
+        boolean atsiskaitymoBudasBankas = taipNe(sc);
+        System.out.println(Messages.ENTER_COMMENT.message);
+        String papildomaInfo = validateAndGetString(sc);
+        PajamuIrasas pi = new PajamuIrasas(suma, LocalDate.now(), kategorija, atsiskaitymoBudasBankas, papildomaInfo);
+        addToArray(pajamos, pi);
+    }
+
 }
