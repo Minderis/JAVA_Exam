@@ -43,18 +43,18 @@ public class Biudzetas {
     public void atspausdintiPajamas() {
         printTableTitle();
         for (PajamuIrasas pi : pajamos) {
-            System.out.println(String.format(Messages.STRING_FORMAT_FOR_INPUT.message,
+            System.out.printf((Messages.STRING_FORMAT_FOR_INPUT.message) + "%n",
                     pi.getId(), pi.getSuma(), pi.getData(),
-                    pi.getKategorija(), pi.isPozymisArIBanka(), pi.getPapildomaInfo()));
+                    pi.getKategorija(), pi.isPozymisArIBanka(), pi.getPapildomaInfo());
         }
     }
 
     public void atspausdintiIslaidas() {
         printTableTitle();
         for (IslaiduIrasas ii : islaidos) {
-            System.out.println(String.format(Messages.STRING_FORMAT_FOR_OUTPUT.message,
+            System.out.printf((Messages.STRING_FORMAT_FOR_OUTPUT.message) + "%n",
                     ii.getId(), ii.getSuma() * -1, ii.getDataSuLaiku().format(MY_DATE_FORMAT),
-                    ii.getKategorija(), ii.isAtsiskaitymoBudasBankas(), ii.getPapildomaInfo()));
+                    ii.getKategorija(), ii.isAtsiskaitymoBudasBankas(), ii.getPapildomaInfo());
         }
     }
 
@@ -67,14 +67,14 @@ public class Biudzetas {
         int id = validateAndGetInt(sc);
         if (pajamos.stream().anyMatch(o -> id == o.getId())) {
             for (PajamuIrasas pi : pajamos) {
-                if(pi.getId() == id) {
+                if (pi.getId() == id) {
                     pajamos.remove(pi);
                     System.out.println(Messages.DELETE_SUCCESS.message);
                     break;
                 }
             }
         } else {
-            System.out.println(String.format(Messages.RECORD_NOT_FOUND.message, id));
+            System.out.printf((Messages.RECORD_NOT_FOUND.message) + "%n", id);
         }
         atspausdintiPajamas();
 
@@ -85,22 +85,22 @@ public class Biudzetas {
         int id = validateAndGetInt(sc);
         if (islaidos.stream().anyMatch(o -> id == o.getId())) {
             for (IslaiduIrasas ii : islaidos) {
-                if(ii.getId() == id) {
+                if (ii.getId() == id) {
                     islaidos.remove(ii);
                     System.out.println(Messages.DELETE_SUCCESS.message);
                     break;
                 }
             }
         } else {
-            System.out.println(String.format(Messages.RECORD_NOT_FOUND.message, id));
+            System.out.printf((Messages.RECORD_NOT_FOUND.message) + "%n", id);
         }
         atspausdintiIslaidas();
 
     }
 
     private void printTableTitle() {
-        System.out.println(String.format(Messages.TITLE_FORMAT.message,
-                "Id", "Suma", "Data", "Kategorija", "Ar bankas?", "Komentaras"));
+        System.out.printf((Messages.TITLE_FORMAT.message) + "%n",
+                "Id", "Suma", "Data", "Kategorija", "Ar bankas?", "Komentaras");
     }
 
     private double validateAndGetDouble(Scanner sc) {
@@ -116,6 +116,7 @@ public class Biudzetas {
         }
         return suma;
     }
+
     private int validateAndGetInt(Scanner sc) {
         int id = 0;
         boolean isNotInt = true;
@@ -163,14 +164,16 @@ public class Biudzetas {
         return isBank;
     }
 
-    private void addToArray(ArrayList<PajamuIrasas> arrayIn, PajamuIrasas pi, ArrayList<IslaiduIrasas> arrayOut, IslaiduIrasas ii) {
-        if (arrayIn == null && pi == null) {
-            arrayOut.add(ii);
-        } else {
-            arrayIn.add(pi);
-        }
+    private void addToArray(ArrayList<PajamuIrasas> arrayIn, PajamuIrasas pi) {
+        arrayIn.add(pi);
         System.out.println(Messages.INPUT_SUCCESS.message);
     }
+
+    private void addToArray(ArrayList<IslaiduIrasas> arrayOut, IslaiduIrasas ii) {
+        arrayOut.add(ii);
+        System.out.println(Messages.INPUT_SUCCESS.message);
+    }
+
 
     private void makeRecord(ArrayList<IslaiduIrasas> islaidos, ArrayList<PajamuIrasas> pajamos, Scanner sc) {
         System.out.println(Messages.ENTER_AMOUNT.message);
@@ -181,12 +184,13 @@ public class Biudzetas {
         boolean atsiskaitymoBudasBankas = taipNe(sc);
         System.out.println(Messages.ENTER_COMMENT.message);
         String papildomaInfo = validateAndGetString(sc);
-        if (islaidos == null) {
+        if (pajamos != null) {
             PajamuIrasas pi = new PajamuIrasas(++id, suma, LocalDate.now(), kategorija, atsiskaitymoBudasBankas, papildomaInfo);
-            addToArray(pajamos, pi, null, null);
-        } else {
+            addToArray(pajamos, pi);
+        }
+        if (islaidos != null) {
             IslaiduIrasas ii = new IslaiduIrasas(++id, suma, LocalDateTime.now(), kategorija, atsiskaitymoBudasBankas, papildomaInfo);
-            addToArray(null, null, islaidos, ii);
+            addToArray(islaidos, ii);
         }
     }
 }
