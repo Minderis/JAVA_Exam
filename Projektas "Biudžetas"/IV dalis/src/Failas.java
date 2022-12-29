@@ -12,18 +12,22 @@ public class Failas {
     public void issaugotiDuomenis(Scanner sc, ArrayList<Irasas> irasai) {
         System.out.println("Nurodykite failo pavadinimą, kuris bus sukurtas src direktorijoje ir į kurį bus išsaugoti duomenys:");
         String name = sc.nextLine();
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("src/" + name))) {
-            for (Irasas irasas : irasai) {
-                if (irasas instanceof PajamuIrasas) {
-                    bw.write(((PajamuIrasas) irasas).getCsvValue());
+        if (name.length() > 0) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter("src/" + name))) {
+                for (Irasas irasas : irasai) {
+                    if (irasas instanceof PajamuIrasas) {
+                        bw.write(((PajamuIrasas) irasas).getCsvValue());
+                    }
+                    if (irasas instanceof IslaiduIrasas) {
+                        bw.write(((IslaiduIrasas) irasas).getCsvValue());
+                    }
                 }
-                if (irasas instanceof IslaiduIrasas) {
-                    bw.write(((IslaiduIrasas) irasas).getCsvValue());
-                }
+                System.out.println("Duomenys sėkmingai išsaugoti faile src/" + name);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
-            System.out.println("Duomenys sėkmingai išsaugoti faile src/" + name);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        } else {
+            System.out.println("Jūs nenurodėte failo pavadinimo!");
         }
     }
 
