@@ -20,7 +20,7 @@ public class Programa {
                     case "7" -> biudzetas.atspausdintiIslaiduIrasus();
                     case "8" -> biudzetas.atspausdintiVisaSarasa();
                     case "9" -> failas.issaugotiDuomenis(sc, biudzetas.getIrasai());
-                    case "0" -> biudzetas.pakeistiIrasuSarasa(failas.gautiDuomennis(sc));
+                    case "0" -> biudzetas.pakeistiIrasuSarasa(failas.gautiDuomenis(sc));
                     case "*" -> {
                         System.out.println("Programa baigė darbą.");
                         isTrue = false;

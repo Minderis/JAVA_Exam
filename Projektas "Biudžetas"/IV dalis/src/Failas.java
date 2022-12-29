@@ -27,10 +27,19 @@ public class Failas {
         }
     }
 
-    public ArrayList<Irasas> gautiDuomennis(Scanner sc) {
+    public ArrayList<Irasas> gautiDuomenis(Scanner sc) {
         System.out.println(Messages.FILE_REQUIREMENTS.message);
         System.out.println("Nurodykite pilną kelią iki failo arba \"src/...\", jei failas guli po src direktorija (failas testavimui: src/test.csv):");
         String path = sc.nextLine();
+        ArrayList<Irasas> irasai = checkFile(path, false);
+        if (irasai != null && irasai.size() > 0) {
+           return checkFile(path, true);
+        } else {
+            return null;
+        }
+    }
+
+    public ArrayList<Irasas> checkFile(String path, boolean showMessage) {
         File file = new File(path);
         ArrayList<Irasas> irasai = new ArrayList<>();
         try {
@@ -43,7 +52,9 @@ public class Failas {
                 if (splittedValues.length == 7) {
                     indexOffset = -1;
                 } else if (splittedValues.length < 7) {
-                    System.out.println("Failo eilutėje Nr. " + currentLine + " trūksta stulpelių! Ji bus ignoruota.");
+                    if (showMessage) {
+                        System.out.println("Failo eilutėje Nr. " + currentLine + " trūksta stulpelių! Ji bus ignoruota.");
+                    }
                     line = br.readLine();
                     currentLine++;
                     Biudzetas.id++;
@@ -75,7 +86,9 @@ public class Failas {
                     line = br.readLine();
                     currentLine++;
                 } catch (Exception e) {
-                    System.out.println("Failo eilutėje Nr. " + currentLine + " aptiktas netinkamo formato įrašas! Ši eilutė bus ignoruojama.");
+                    if (showMessage) {
+                        System.out.println("Failo eilutėje Nr. " + currentLine + " aptiktas netinkamo formato įrašas! Ši eilutė bus ignoruojama.");
+                    }
                     line = br.readLine();
                     currentLine++;
                 }
@@ -83,7 +96,9 @@ public class Failas {
             }
             br.close();
         } catch (Exception e) {
-            System.out.println("KLAIDA!");
+            if (showMessage) {
+                System.out.println("KLAIDA!");
+            }
         }
         return irasai;
     }
