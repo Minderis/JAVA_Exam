@@ -9,6 +9,7 @@ import java.util.Scanner;
 public class Failas {
 
     private static final DateTimeFormatter MY_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
     public void issaugotiDuomenis(Scanner sc, ArrayList<Irasas> irasai) {
         System.out.println("Nurodykite failo pavadinimą, kuris bus sukurtas src direktorijoje ir į kurį bus išsaugoti duomenys:");
         String name = sc.nextLine();
@@ -37,7 +38,8 @@ public class Failas {
         String path = sc.nextLine();
         ArrayList<Irasas> irasai = checkFile(path, false);
         if (irasai != null && irasai.size() > 0) {
-           return checkFile(path, true);
+            Biudzetas.id = 1;
+            return checkFile(path, true);
         } else {
             return null;
         }
